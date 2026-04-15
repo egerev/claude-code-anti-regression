@@ -11,9 +11,13 @@ export interface Paths {
 
 export function defaultPaths(overrides: Partial<Paths> = {}): Paths {
   const home = os.homedir();
-  const claudeDir = path.join(home, ".claude");
+  const defaultClaudeDir = path.join(home, ".claude");
+  const settings = overrides.settings ?? path.join(defaultClaudeDir, "settings.json");
+  // When settings is overridden, derive sibling paths from its parent so tests
+  // and custom setups stay self-contained instead of spilling into ~/.claude.
+  const claudeDir = overrides.settings ? path.dirname(overrides.settings) : defaultClaudeDir;
   return {
-    settings: overrides.settings ?? path.join(claudeDir, "settings.json"),
+    settings,
     backupsDir: overrides.backupsDir ?? path.join(claudeDir, "backups"),
     marker:
       overrides.marker ?? path.join(claudeDir, ".cc-anti-regression-marker.json"),
