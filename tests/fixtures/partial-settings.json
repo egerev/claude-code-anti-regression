@@ -1,0 +1,12 @@
+{
+  "env": {
+    "CLAUDE_CODE_EFFORT_LEVEL": "max",
+    "CUSTOM_VAR": "keep-me"
+  },
+  "permissions": {
+    "allow": ["Read(*)"]
+  },
+  "hooks": {
+    "Stop": "echo done"
+  }
+}

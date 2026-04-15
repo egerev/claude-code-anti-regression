@@ -1,0 +1,13 @@
+{
+  "env": {
+    "CLAUDE_CODE_EFFORT_LEVEL": "max",
+    "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
+    "MAX_THINKING_TOKENS": "63999",
+    "CLAUDE_CODE_AUTO_COMPACT_WINDOW": "400000",
+    "CUSTOM_VAR": "keep-me"
+  },
+  "showThinkingSummaries": true,
+  "permissions": {
+    "allow": ["Read(*)"]
+  }
+}
