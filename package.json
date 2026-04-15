@@ -1,0 +1,58 @@
+{
+  "name": "claude-code-anti-regression",
+  "version": "0.1.0",
+  "description": "Apply recommended env vars to ~/.claude/settings.json to mitigate the Feb-Mar 2026 Claude Code quality regression. Idempotent, reversible, dry-run-able.",
+  "type": "module",
+  "bin": {
+    "cc-anti-regression": "dist/cli.js"
+  },
+  "main": "dist/cli.js",
+  "files": [
+    "dist",
+    "recommendations.json",
+    "install.sh",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "anthropic",
+    "cli",
+    "anti-regression",
+    "settings",
+    "effort"
+  ],
+  "author": "egerev <egor@gosync.ai>",
+  "license": "MIT",
+  "homepage": "https://github.com/egerev/claude-code-anti-regression",
+  "bugs": {
+    "url": "https://github.com/egerev/claude-code-anti-regression/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/egerev/claude-code-anti-regression.git"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "kleur": "^4.1.5",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/prompts": "^2.4.9",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  }
+}
