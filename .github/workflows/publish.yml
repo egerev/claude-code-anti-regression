@@ -25,6 +25,16 @@ jobs:
       - run: npm run build
       - run: npm test
 
+      - name: Check if version already on npm
+        id: check
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "claude-code-anti-regression@${VERSION}" version >/dev/null 2>&1; then
+            echo "already_published=true" >> "$GITHUB_OUTPUT"
+            echo "claude-code-anti-regression@${VERSION} already on npm — skipping publish."
+          fi
+
       - run: npm publish --access public --provenance
+        if: steps.check.outputs.already_published != 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
