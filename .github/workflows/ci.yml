@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: test (${{ matrix.os }}, node ${{ matrix.node }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        node: ["20", "22"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+      - name: Smoke test CLI
+        run: |
+          node dist/cli.js --help
+          node dist/cli.js check --help
+          node dist/cli.js install --help
+          node dist/cli.js uninstall --help
+          node dist/cli.js status --help
+
+      - name: Smoke test bash fallback (jq path)
+        shell: bash
+        run: |
+          set -euo pipefail
+          TMP="$(mktemp -d)"
+          echo '{"env":{"FOO":"bar"},"hooks":{"Stop":"x"}}' > "$TMP/settings.json"
+          ORIG="$(cat "$TMP/settings.json")"
+          # Force bash fallback by masking node from PATH
+          PATH="/usr/bin:/bin" CC_AR_SETTINGS_PATH="$TMP/settings.json" bash install.sh install
+          PATH="/usr/bin:/bin" CC_AR_SETTINGS_PATH="$TMP/settings.json" bash install.sh check
+          PATH="/usr/bin:/bin" CC_AR_SETTINGS_PATH="$TMP/settings.json" bash install.sh uninstall
+          if [ "$(cat "$TMP/settings.json")" != "$ORIG" ]; then
+            echo "FAIL: bash fallback did not restore settings byte-for-byte" >&2
+            exit 1
+          fi
+          echo "Bash fallback parity OK"
